@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:zhaoxiaowu_app/global/Global.dart';
 
 void main() {
   runApp(MyApp());
@@ -61,6 +62,22 @@ class _MyHomePageState extends State<MyHomePage> {
       // called again, and so nothing would appear to happen.
       _counter++;
     });
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    loadData();
+  }
+
+  void loadData() async {
+    await Global.getInstance().dio.get(
+      "/dio/dio",
+      queryParameters: {
+        "id": "321321",
+      },
+    );
   }
 
   @override
