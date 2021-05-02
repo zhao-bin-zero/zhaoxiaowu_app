@@ -23,15 +23,19 @@ class Global {
       responseType: ResponseType.json,
     );
     dio.interceptors.add(InterceptorsWrapper(
-      onRequest: (options) {
-        print("请求" + options.headers.toString());
-        print("请求" + options.extra.toString());
-      },
-      onResponse: (e) {
-        print("返回" + e.toString());
-      },
+      // onRequest: (options) {
+      //   print("请求" + options.headers.toString());
+      //   print("请求" + options.extra.toString());
+      // },
+      // onResponse: (e) {
+      //   print("返回" + e.toString());
+      // },
       onError: (e) {
-        print("错误" + e.toString());
+        if (e.type == DioErrorType.CONNECT_TIMEOUT) {
+          print("连接超时错误");
+        } else {
+          print("接口错误！");
+        }
       },
     ));
   }
