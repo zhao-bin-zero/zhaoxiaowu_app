@@ -11,6 +11,8 @@ class _LoginViewState extends State<LoginView> {
     return Scaffold(
       appBar: AppBar(
         title: Text("登陆"),
+        centerTitle: true,
+        elevation: 10,
       ),
     );
   }
