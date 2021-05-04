@@ -1,0 +1,3 @@
+String pubKey = "-----BEGIN PUBLIC KEY-----\n" +
+    "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCRWiiWVttmelR624q5lftSrmg/Bda/joHYmXeOBdPFtxrsi+EzoUHN0/UCp0Jooc7JflrCBL5kSRFskMDebaZHOySyfPue0Wg/hUdOXa66Rz2QUsDteN9//48T8tuuet2z8aEZaJgA2dKhskHbq6Z6UEZFLbEXHWdF4RxHe5TMqwIDAQAB\n" +
+    "-----END PUBLIC KEY-----";
