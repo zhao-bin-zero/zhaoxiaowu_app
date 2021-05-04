@@ -1,10 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:jpush_flutter/jpush_flutter.dart';
+import 'package:provider/provider.dart';
 import 'package:zhaoxiaowu_app/routes/routes.dart';
+import 'package:zhaoxiaowu_app/viewmodel/login_viewmodel.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(MultiProvider(
+    providers: [
+      ChangeNotifierProvider(create: (context) => LoginViewmodel()),
+    ],
+    child: MyApp(),
+  ));
 }
 
 class MyApp extends StatefulWidget {
@@ -63,6 +70,7 @@ class _MyAppState extends State<MyApp> {
       title: '赵小屋',
       theme: ThemeData(
         primarySwatch: Colors.blue,
+        primaryColor: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       routes: routes,
