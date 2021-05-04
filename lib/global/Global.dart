@@ -12,7 +12,7 @@ class Global {
   Global() {
     dio = new Dio();
     dio.options = BaseOptions(
-      baseUrl: "http://api.td0f7.cn:8083",
+      baseUrl: "https://zxw.td0f7.cn/",
       connectTimeout: 5000,
       sendTimeout: 5000,
       receiveTimeout: 5000,
