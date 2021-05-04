@@ -109,15 +109,8 @@ class _LoginViewState extends State<LoginView> {
     );
   }
 
-  void _login() {
-    context.read<LoginViewmodel>().setIsLogin(true);
-    new Timer(
-      Duration(seconds: 3),
-      () {
-        context.read<LoginViewmodel>().setIsLogin(false);
-        Navigator.of(context).pushNamed("menu");
-      },
-    );
+  void _login() async {
+    context.read<LoginViewmodel>().login(context);
   }
 
   void _register() {

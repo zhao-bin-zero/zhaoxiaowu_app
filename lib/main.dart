@@ -5,6 +5,8 @@ import 'package:provider/provider.dart';
 import 'package:zhaoxiaowu_app/routes/routes.dart';
 import 'package:zhaoxiaowu_app/viewmodel/login_viewmodel.dart';
 
+final GlobalKey<NavigatorState> navigatorKey = new GlobalKey<NavigatorState>();
+
 void main() {
   runApp(MultiProvider(
     providers: [
@@ -66,6 +68,7 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      navigatorKey: navigatorKey,
       debugShowCheckedModeBanner: false,
       title: '赵小屋',
       theme: ThemeData(

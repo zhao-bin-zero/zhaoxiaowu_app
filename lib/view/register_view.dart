@@ -53,7 +53,9 @@ class _RegisterViewState extends State<RegisterView> {
             textInputAction: TextInputAction.next,
             footer: Row(
               children: [
-                WeSwitch(),
+                WeSwitch(
+                  size: 20,
+                ),
                 SizedBox(width: 8),
                 Text("男"),
               ],
@@ -64,7 +66,9 @@ class _RegisterViewState extends State<RegisterView> {
             content: "",
             footer: Row(
               children: [
-                WeSwitch(),
+                WeSwitch(
+                  size: 20,
+                ),
                 SizedBox(width: 8),
                 Text("阴历"),
               ],
