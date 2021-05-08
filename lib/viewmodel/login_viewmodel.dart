@@ -1,26 +1,15 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:weui/weui.dart';
+import 'package:zhaoxiaowu_app/eventbus/event_bus.dart';
 import 'package:zhaoxiaowu_app/main.dart';
 import 'package:zhaoxiaowu_app/model/login_model.dart';
 
 class LoginViewmodel extends ChangeNotifier {
   bool _isLogin = false;
-  TextEditingController _user;
-  TextEditingController _pass;
 
   bool get getIsLogin {
     return _isLogin;
-  }
-
-  TextEditingController get getUser {
-    if (_user == null) _user = TextEditingController();
-    return _user;
-  }
-
-  TextEditingController get getPass {
-    if (_pass == null) _pass = TextEditingController();
-    return _pass;
   }
 
   void setIsLogin(bool value) {
@@ -28,22 +17,41 @@ class LoginViewmodel extends ChangeNotifier {
     notifyListeners();
   }
 
-  void login(BuildContext context) async {
+  void login(String user, String pass) async {
     setIsLogin(true);
-    if (getUser.text.isEmpty) {
-      WeToast.fail(context)(message: "账号不能为空！");
+    if (user.isEmpty) {
+      bus.emit(
+        "fail",
+        {
+          "view": "login",
+          "message": "账号不能为空！",
+        },
+      );
       setIsLogin(false);
       return;
-    } else if (getPass.text.isEmpty) {
-      WeToast.fail(context)(message: "密码不能为空！");
+    } else if (pass.isEmpty) {
+      bus.emit(
+        "fail",
+        {
+          "view": "login",
+          "message": "密码不能为空！",
+        },
+      );
       setIsLogin(false);
       return;
     }
-    Response result = await loginModel(getUser.text, getPass.text);
+    Response result = await loginModel(user, pass);
+    print(result);
     if (result.data["success"]) {
-      Navigator.of(context).popAndPushNamed("menu");
+      Navigator.of(navigatorKey.currentContext).popAndPushNamed("menu");
     } else {
-      WeDialog.alert(context)(result.data["msg"]);
+      bus.emit(
+        "fail",
+        {
+          "view": "login",
+          "message": result.data["msg"],
+        },
+      );
     }
     setIsLogin(false);
   }

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:weui/weui.dart';
 import 'package:zhaoxiaowu_app/base/view.dart';
+import 'package:zhaoxiaowu_app/eventbus/event_bus.dart';
 import 'package:zhaoxiaowu_app/viewmodel/login_viewmodel.dart';
 
 class LoginView extends StatefulWidget {
@@ -12,12 +13,29 @@ class LoginView extends StatefulWidget {
 }
 
 class _LoginViewState extends State<LoginView> {
+  TextEditingController _user;
+  TextEditingController _pass;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _user = new TextEditingController();
+    _pass = new TextEditingController();
+    bus.on("fail", (arg) {
+      if (arg["view"] == "login") {
+        WeToast.fail(context)(message: arg["message"]);
+      }
+    });
+  }
+
   @override
   void dispose() {
     // TODO: implement dispose
     super.dispose();
-    context.read<LoginViewmodel>().getUser.dispose();
-    context.read<LoginViewmodel>().getPass.dispose();
+    _user.dispose();
+    _pass.dispose();
+    bus.off("fail");
   }
 
   @override
@@ -59,7 +77,7 @@ class _LoginViewState extends State<LoginView> {
                 hintText: "请输入账号",
                 prefixIcon: Icon(Icons.person),
               ),
-              controller: Provider.of<LoginViewmodel>(context).getUser,
+              controller: _user,
               autofocus: true,
               textInputAction: TextInputAction.next,
             ),
@@ -69,7 +87,7 @@ class _LoginViewState extends State<LoginView> {
                 hintText: "请输入密码",
                 prefixIcon: Icon(Icons.lock),
               ),
-              controller: Provider.of<LoginViewmodel>(context).getPass,
+              controller: _pass,
               obscureText: true,
               textInputAction: TextInputAction.send,
               onSubmitted: (String) {
@@ -110,7 +128,7 @@ class _LoginViewState extends State<LoginView> {
   }
 
   void _login() async {
-    context.read<LoginViewmodel>().login(context);
+    context.read<LoginViewmodel>().login(_user.text, _pass.text);
   }
 
   void _register() {
