@@ -2,15 +2,23 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:jpush_flutter/jpush_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:zhaoxiaowu_app/global/global_theme.dart';
 import 'package:zhaoxiaowu_app/routes/routes.dart';
 import 'package:zhaoxiaowu_app/viewmodel/login_viewmodel.dart';
+import 'package:zhaoxiaowu_app/viewmodel/theme_viewmodel.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = new GlobalKey<NavigatorState>();
-
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  SharedPreferences sp = await SharedPreferences.getInstance();
+  int color = await sp.getInt("color") ?? 0;
+  ThemeViewmodel themeViewmodel = ThemeViewmodel();
+  themeViewmodel.setColor(color);
   runApp(MultiProvider(
     providers: [
       ChangeNotifierProvider(create: (context) => LoginViewmodel()),
+      ChangeNotifierProvider(create: (context) => themeViewmodel),
     ],
     child: MyApp(),
   ));
@@ -71,10 +79,12 @@ class _MyAppState extends State<MyApp> {
       navigatorKey: navigatorKey,
       debugShowCheckedModeBanner: false,
       title: '赵小屋',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        primaryColor: Colors.blue,
-        visualDensity: VisualDensity.adaptivePlatformDensity,
+      theme: ThemeData.light().copyWith(
+        primaryColor: themes[Provider.of<ThemeViewmodel>(context).getColor],
+        buttonTheme: ButtonThemeData(
+          buttonColor: themes[Provider.of<ThemeViewmodel>(context).getColor],
+          textTheme: ButtonTextTheme.normal,
+        ),
       ),
       routes: routes,
     );

@@ -10,7 +10,17 @@ class _MenuViewState extends State<MenuView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: getAppbar("菜单"),
+      appBar: getAppbarActions(
+        "菜单",
+        [
+          IconButton(
+            icon: Icon(Icons.settings),
+            onPressed: () {
+              Navigator.of(context).pushNamed("theme");
+            },
+          )
+        ],
+      ),
     );
   }
 }
