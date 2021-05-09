@@ -6,6 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:zhaoxiaowu_app/global/global_theme.dart';
 import 'package:zhaoxiaowu_app/routes/routes.dart';
 import 'package:zhaoxiaowu_app/viewmodel/login_viewmodel.dart';
+import 'package:zhaoxiaowu_app/viewmodel/register_viewmodel.dart';
 import 'package:zhaoxiaowu_app/viewmodel/theme_viewmodel.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = new GlobalKey<NavigatorState>();
@@ -18,6 +19,7 @@ void main() async {
   runApp(MultiProvider(
     providers: [
       ChangeNotifierProvider(create: (context) => LoginViewmodel()),
+      ChangeNotifierProvider(create: (context) => RegisterViewmodel()),
       ChangeNotifierProvider(create: (context) => themeViewmodel),
     ],
     child: MyApp(),
