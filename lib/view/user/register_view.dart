@@ -5,6 +5,8 @@ import 'package:weui/form/index.dart';
 import 'package:weui/input/index.dart';
 import 'package:weui/weui.dart';
 import 'package:zhaoxiaowu_app/base/view.dart';
+import 'package:zhaoxiaowu_app/eventbus/event_bus.dart';
+import 'package:zhaoxiaowu_app/utils/date_utils.dart';
 import 'package:zhaoxiaowu_app/viewmodel/register_viewmodel.dart';
 
 class RegisterView extends StatefulWidget {
@@ -18,6 +20,11 @@ class _RegisterViewState extends State<RegisterView> {
   TextEditingController _phone;
   TextEditingController _code;
   TextEditingController _name;
+  DateTime _dateTime;
+  int _gender = 0; //0=男 1=女
+  int _solar = 0; //0=阳历 1=阴历/农历
+  int count = 0;
+
   @override
   void initState() {
     // TODO: implement initState
@@ -27,6 +34,11 @@ class _RegisterViewState extends State<RegisterView> {
     _phone = TextEditingController();
     _code = TextEditingController();
     _name = TextEditingController();
+    bus.on("fail", (arg) {
+      if (arg["view"] == "login") {
+        WeToast.fail(context)(message: arg["message"]);
+      }
+    });
   }
 
   @override
@@ -38,6 +50,7 @@ class _RegisterViewState extends State<RegisterView> {
     _phone.dispose();
     _code.dispose();
     _name.dispose();
+    bus.off("fail");
   }
 
   @override
@@ -61,9 +74,11 @@ class _RegisterViewState extends State<RegisterView> {
             textInputAction: TextInputAction.send,
             type: TextInputType.phone,
             footer: WeButton(
-              "获取验证码",
+              count > 0 ? count.toString() + "秒后再次获取" : "获取验证码",
+              disabled: count > 0 ? true : false,
               theme: WeButtonType.primary,
               size: WeButtonSize.mini,
+              onClick: _getCode,
             ),
             onChange: (v) {
               _phone.text = v;
@@ -97,19 +112,16 @@ class _RegisterViewState extends State<RegisterView> {
               children: [
                 WeSwitch(
                   size: 20,
-                  checked:
-                      Provider.of<RegisterViewmodel>(context).getGender == 0
-                          ? false
-                          : true,
+                  checked: _gender == 0 ? false : true,
                   onChange: (v) {
-                    context.read<RegisterViewmodel>().setGender(v ? 1 : 0);
+                    setState(() {
+                      _gender = v ? 1 : 0;
+                    });
                   },
                 ),
                 SizedBox(width: 8),
                 Text(
-                  Provider.of<RegisterViewmodel>(context).getGender == 0
-                      ? "男"
-                      : "女",
+                  _gender == 0 ? "男" : "女",
                 ),
               ],
             ),
@@ -119,24 +131,22 @@ class _RegisterViewState extends State<RegisterView> {
           ),
           WeCell(
             label: "出生日期",
-            content: Provider.of<RegisterViewmodel>(context).getDateTime,
+            content: getYMD(_dateTime),
             align: Alignment.center,
             footer: Row(
               children: [
                 WeSwitch(
                   size: 20,
-                  checked: Provider.of<RegisterViewmodel>(context).getSolar == 0
-                      ? false
-                      : true,
+                  checked: _solar == 0 ? false : true,
                   onChange: (v) {
-                    context.read<RegisterViewmodel>().setSolar(v ? 1 : 0);
+                    setState(() {
+                      _solar = v ? 1 : 0;
+                    });
                   },
                 ),
                 SizedBox(width: 8),
                 Text(
-                  Provider.of<RegisterViewmodel>(context).getSolar == 0
-                      ? "阳历"
-                      : "阴历",
+                  _solar == 0 ? "阳历" : "阴历",
                 ),
               ],
             ),
@@ -146,7 +156,9 @@ class _RegisterViewState extends State<RegisterView> {
                   minTime: DateTime(2010, 1, 1),
                   maxTime: DateTime(2050, 1, 1),
                   onChanged: (date) {}, onConfirm: (date) {
-                context.read<RegisterViewmodel>().setDateTime(date);
+                setState(() {
+                  _dateTime = date;
+                });
               }, currentTime: DateTime.now(), locale: LocaleType.zh);
             },
           ),
@@ -156,19 +168,68 @@ class _RegisterViewState extends State<RegisterView> {
               "注册",
               loading: Provider.of<RegisterViewmodel>(context).getLoading,
               theme: WeButtonType.warn,
-              onClick: () {
-                context.read<RegisterViewmodel>().login(
-                      _user.text,
-                      _pass.text,
-                      _name.text,
-                      _phone.text,
-                      _code.text,
-                    );
-              },
+              onClick: _register,
             ),
           ),
         ],
       ),
     );
+  }
+
+  void _getCode() {
+    setState(() {
+      count = 60;
+    });
+    _task();
+  }
+
+  void _task() {
+    Future.delayed(new Duration(seconds: 1), () {
+      setState(() {
+        count--;
+        if (count > 0) {
+          _task();
+        }
+      });
+    });
+  }
+
+  void _register() {
+    context.read<RegisterViewmodel>().setLoading(true);
+    if (_user.text == null || _user.text.isEmpty) {
+      WeToast.fail(context)(message: "账号不能为空！");
+      context.read<RegisterViewmodel>().setLoading(false);
+      return;
+    } else if (_pass.text == null || _pass.text.isEmpty) {
+      WeToast.fail(context)(message: "密码不能为空！");
+      context.read<RegisterViewmodel>().setLoading(false);
+      return;
+    } else if (_name.text == null || _name.text.isEmpty) {
+      WeToast.fail(context)(message: "姓名不能为空！");
+      context.read<RegisterViewmodel>().setLoading(false);
+      return;
+    } else if (_phone.text == null || _phone.text.isEmpty) {
+      WeToast.fail(context)(message: "手机号不能为空！");
+      context.read<RegisterViewmodel>().setLoading(false);
+      return;
+    } else if (_code.text == null || _code.text.isEmpty) {
+      WeToast.fail(context)(message: "验证码不能为空！");
+      context.read<RegisterViewmodel>().setLoading(false);
+      return;
+    } else if (_dateTime == null) {
+      WeToast.fail(context)(message: "生日不能为空！");
+      context.read<RegisterViewmodel>().setLoading(false);
+      return;
+    }
+    context.read<RegisterViewmodel>().login(
+          _user.text,
+          _pass.text,
+          _name.text,
+          _phone.text,
+          _code.text,
+          _gender,
+          getYMD(_dateTime),
+          _solar,
+        );
   }
 }

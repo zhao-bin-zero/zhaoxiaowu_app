@@ -53,24 +53,6 @@ class _LoginViewState extends State<LoginView> {
               fit: BoxFit.fill,
             ),
             SizedBox(height: 16),
-            // WeForm(
-            //   children: [
-            //     WeInput(
-            //       autofocus: false,
-            //       label: "账号",
-            //       hintText: "请输入账号",
-            //       clearable: true,
-            //       textInputAction: TextInputAction.next,
-            //     ),
-            //     WeInput(
-            //       label: "密码",
-            //       hintText: "请输入密码",
-            //       clearable: true,
-            //       obscureText: true,
-            //       textInputAction: TextInputAction.send,
-            //     ),
-            //   ],
-            // ),
             TextField(
               decoration: InputDecoration(
                 labelText: "账号",
@@ -128,6 +110,16 @@ class _LoginViewState extends State<LoginView> {
   }
 
   void _login() async {
+    context.read<LoginViewmodel>().setIsLogin(true);
+    if (_user == null || _user.text.isEmpty) {
+      WeToast.fail(context)(message: "账号不能为空！");
+      context.read<LoginViewmodel>().setIsLogin(false);
+      return;
+    } else if (_pass == null || _pass.text.isEmpty) {
+      WeToast.fail(context)(message: "密码不能为空！");
+      context.read<LoginViewmodel>().setIsLogin(false);
+      return;
+    }
     context.read<LoginViewmodel>().login(_user.text, _pass.text);
   }
 

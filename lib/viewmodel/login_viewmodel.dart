@@ -18,28 +18,6 @@ class LoginViewmodel extends ChangeNotifier {
   }
 
   void login(String user, String pass) async {
-    setIsLogin(true);
-    if (user.isEmpty) {
-      bus.emit(
-        "fail",
-        {
-          "view": "login",
-          "message": "账号不能为空！",
-        },
-      );
-      setIsLogin(false);
-      return;
-    } else if (pass.isEmpty) {
-      bus.emit(
-        "fail",
-        {
-          "view": "login",
-          "message": "密码不能为空！",
-        },
-      );
-      setIsLogin(false);
-      return;
-    }
     Response result = await loginModel(user, pass);
     print(result);
     if (result.data["success"]) {
