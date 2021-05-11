@@ -3,7 +3,9 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:zhaoxiaowu_app/eventbus/event_bus.dart';
+import 'package:zhaoxiaowu_app/main.dart';
 import 'package:zhaoxiaowu_app/model/register_model.dart';
+import 'package:zhaoxiaowu_app/utils/event_utils.dart';
 import 'package:zhaoxiaowu_app/utils/rsa/rsa_utils.dart';
 
 class RegisterViewmodel extends ChangeNotifier {
@@ -32,15 +34,12 @@ class RegisterViewmodel extends ChangeNotifier {
     }));
     print(result);
     if (result.data["success"]) {
-      // Navigator.of(navigaorKey.currentContext).popAndPushNamed("menu");
+      Navigator.pop(navigatorKey.currentContext, {
+        "user": user,
+        "pass": pass,
+      });
     } else {
-      bus.emit(
-        "fail",
-        {
-          "view": "login",
-          "message": result.data["msg"],
-        },
-      );
+      postMessage("fail", result.data["msg"]);
     }
     setLoading(false);
   }

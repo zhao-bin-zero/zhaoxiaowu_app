@@ -123,7 +123,13 @@ class _LoginViewState extends State<LoginView> {
     context.read<LoginViewmodel>().login(_user.text, _pass.text);
   }
 
-  void _register() {
-    Navigator.of(context).pushNamed("register");
+  void _register() async {
+    dynamic params = await Navigator.of(context).pushNamed("register");
+    if (params != null) {
+      setState(() {
+        _user.text = params["user"];
+        _pass.text = params["pass"];
+      });
+    }
   }
 }

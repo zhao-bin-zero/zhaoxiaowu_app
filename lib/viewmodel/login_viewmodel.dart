@@ -1,9 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:weui/weui.dart';
-import 'package:zhaoxiaowu_app/eventbus/event_bus.dart';
 import 'package:zhaoxiaowu_app/main.dart';
 import 'package:zhaoxiaowu_app/model/login_model.dart';
+import 'package:zhaoxiaowu_app/utils/event_utils.dart';
 
 class LoginViewmodel extends ChangeNotifier {
   bool _isLogin = false;
@@ -23,13 +22,7 @@ class LoginViewmodel extends ChangeNotifier {
     if (result.data["success"]) {
       Navigator.of(navigatorKey.currentContext).popAndPushNamed("menu");
     } else {
-      bus.emit(
-        "fail",
-        {
-          "view": "login",
-          "message": result.data["msg"],
-        },
-      );
+      postMessage("fail", result.data["msg"]);
     }
     setIsLogin(false);
   }
