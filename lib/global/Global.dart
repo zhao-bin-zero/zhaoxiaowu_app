@@ -3,6 +3,8 @@ import 'package:dio/dio.dart';
 class Global {
   static Global _instance;
   Dio dio;
+  String token;
+  Map user;
 
   static Global getInstance() {
     if (_instance == null) _instance = new Global();
@@ -16,9 +18,9 @@ class Global {
       connectTimeout: 5000,
       sendTimeout: 5000,
       receiveTimeout: 5000,
-      headers: {
-        "token": "3213131",
-      },
+      // headers: {
+      //   "token": "3213131",
+      // },
       contentType: Headers.formUrlEncodedContentType,
       responseType: ResponseType.json,
     );

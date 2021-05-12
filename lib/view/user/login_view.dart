@@ -2,9 +2,11 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:weui/weui.dart';
 import 'package:zhaoxiaowu_app/base/view.dart';
 import 'package:zhaoxiaowu_app/eventbus/event_bus.dart';
+import 'package:zhaoxiaowu_app/global/global.dart';
 import 'package:zhaoxiaowu_app/viewmodel/login_viewmodel.dart';
 
 class LoginView extends StatefulWidget {
@@ -27,6 +29,7 @@ class _LoginViewState extends State<LoginView> {
         WeToast.fail(context)(message: arg["message"]);
       }
     });
+    loadData();
   }
 
   @override
@@ -107,6 +110,15 @@ class _LoginViewState extends State<LoginView> {
         ),
       ),
     );
+  }
+
+  void loadData() async {
+    SharedPreferences sp = await SharedPreferences.getInstance();
+    String token = await sp.getString("token");
+    if (token != null) {
+      Global.getInstance().dio.options.headers["token"] = token;
+      context.read<LoginViewmodel>().tokenLogin(token);
+    }
   }
 
   void _login() async {

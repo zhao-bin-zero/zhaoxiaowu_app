@@ -11,3 +11,7 @@ Future loginModel(String user, String pass) async {
     },
   );
 }
+
+Future tokenLoginModel() async {
+  return await Global.getInstance().dio.get("/zxw/user");
+}
