@@ -1,5 +1,8 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:weui/weui.dart';
 import 'package:zhaoxiaowu_app/base/view.dart';
 import 'package:zhaoxiaowu_app/global/global.dart';
 
@@ -18,7 +21,7 @@ class _MenuViewState extends State<MenuView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: getAppbarActionsAndLeading(
+      appBar: getAppbarActions(
         "菜单",
         [
           IconButton(
@@ -28,11 +31,44 @@ class _MenuViewState extends State<MenuView> {
             },
           )
         ],
-        IconButton(
-          icon: Icon(Icons.exit_to_app),
-          onPressed: () {
-            Navigator.of(context).popAndPushNamed("/");
-          },
+      ),
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            UserAccountsDrawerHeader(
+              accountName: Text("王众"),
+              accountEmail: Text(
+                "81024198@qq.com",
+              ),
+            ),
+            WeCell(
+              label: "支出上限",
+              content: Global.getInstance().user["money"].toString(),
+              footer: Icon(Icons.navigate_next),
+              onClick: () {},
+            ),
+            Divider(height: 1),
+            WeCell(
+              label: "注册日期",
+              content: Global.getInstance().user["date"],
+              footer: Icon(Icons.navigate_next),
+              onClick: () {
+                Navigator.pop(context);
+              },
+            ),
+            Divider(height: 1),
+            WeCell(
+              label: "退出登陆",
+              content: "",
+              footer: Icon(Icons.exit_to_app),
+              onClick: () async {
+                SharedPreferences sp = await SharedPreferences.getInstance();
+                sp.remove("token");
+                Navigator.of(context).popAndPushNamed("/");
+              },
+            ),
+          ],
         ),
       ),
       body: Center(
