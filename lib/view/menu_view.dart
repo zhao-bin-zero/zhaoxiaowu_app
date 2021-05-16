@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:weui/weui.dart';
 import 'package:zhaoxiaowu_app/base/view.dart';
@@ -71,8 +72,23 @@ class _MenuViewState extends State<MenuView> {
           ],
         ),
       ),
-      body: Center(
-        child: Text(Global.getInstance().user["name"]),
+      body: Column(
+        children: [
+          Container(
+            height: 300,
+            child: new Swiper(
+              itemBuilder: (BuildContext context, int index) {
+                return new Image.network(
+                  "http://via.placeholder.com/350x150",
+                  fit: BoxFit.fill,
+                );
+              },
+              itemCount: 3,
+              pagination: new SwiperPagination(),
+              control: new SwiperControl(),
+            ),
+          ),
+        ],
       ),
     );
   }
