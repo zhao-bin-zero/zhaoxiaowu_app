@@ -160,6 +160,13 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "1.0.11"
+  flutter_screenutil:
+    dependency: "direct main"
+    description:
+      name: flutter_screenutil
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "4.0.4+1"
   flutter_swiper:
     dependency: "direct main"
     description:
@@ -373,13 +380,6 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "0.22.6"
-  screen_ratio_adapter:
-    dependency: "direct main"
-    description:
-      name: screen_ratio_adapter
-      url: "https://pub.flutter-io.cn"
-    source: hosted
-    version: "1.0.2"
   shared_preferences:
     dependency: "direct main"
     description:

@@ -1,5 +1,5 @@
 import 'dart:async';
-
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -47,16 +47,16 @@ class _LoginViewState extends State<LoginView> {
       appBar: getAppbar("登陆"),
       body: SingleChildScrollView(
         child: Padding(
-          padding: EdgeInsets.all(20),
+          padding: EdgeInsets.all(20.0.r),
           child: Column(
             children: [
               Image.asset(
                 "images/main.jpg",
                 width: double.infinity,
-                height: 260,
+                height: 260.0.h,
                 fit: BoxFit.fill,
               ),
-              SizedBox(height: 16),
+              SizedBox(height: 16.0.h),
               TextField(
                 decoration: InputDecoration(
                   labelText: "账号",
@@ -80,7 +80,7 @@ class _LoginViewState extends State<LoginView> {
                   print("submit");
                 },
               ),
-              SizedBox(height: 16),
+              SizedBox(height: 16.h),
               GestureDetector(
                 child: Container(
                   width: double.infinity,
@@ -94,14 +94,13 @@ class _LoginViewState extends State<LoginView> {
                   print("找回密码");
                 },
               ),
-              SizedBox(height: 16),
+              SizedBox(height: 16.h),
               WeButton(
                 "登陆",
                 theme: WeButtonType.primary,
-                loading: Provider.of<LoginViewmodel>(context).getIsLogin,
                 onClick: _login,
               ),
-              SizedBox(height: 8),
+              SizedBox(height: 8.h),
               WeButton(
                 "注册",
                 theme: WeButtonType.primary,
@@ -124,16 +123,14 @@ class _LoginViewState extends State<LoginView> {
   }
 
   void _login() async {
-    context.read<LoginViewmodel>().setIsLogin(true);
     if (_user == null || _user.text.isEmpty) {
       WeToast.fail(context)(message: "账号不能为空！");
-      context.read<LoginViewmodel>().setIsLogin(false);
       return;
     } else if (_pass == null || _pass.text.isEmpty) {
       WeToast.fail(context)(message: "密码不能为空！");
-      context.read<LoginViewmodel>().setIsLogin(false);
       return;
     }
+    Global.getInstance().context = context;
     context.read<LoginViewmodel>().login(_user.text, _pass.text);
   }
 

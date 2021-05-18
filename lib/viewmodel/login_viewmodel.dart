@@ -7,17 +7,6 @@ import 'package:zhaoxiaowu_app/model/login_model.dart';
 import 'package:zhaoxiaowu_app/utils/event_utils.dart';
 
 class LoginViewmodel extends ChangeNotifier {
-  bool _isLogin = false;
-
-  bool get getIsLogin {
-    return _isLogin;
-  }
-
-  void setIsLogin(bool value) {
-    _isLogin = value;
-    notifyListeners();
-  }
-
   void login(String user, String pass) async {
     SharedPreferences sp = await SharedPreferences.getInstance();
     Response result = await loginModel(user, pass);
@@ -32,7 +21,6 @@ class LoginViewmodel extends ChangeNotifier {
     } else {
       postMessage("fail", result.data["msg"]);
     }
-    setIsLogin(false);
   }
 
   void tokenLogin(String token) async {

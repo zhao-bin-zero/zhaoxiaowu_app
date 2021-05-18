@@ -1,10 +1,15 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
+import 'package:weui/weui.dart';
+import 'package:zhaoxiaowu_app/main.dart';
 
 class Global {
   static Global _instance;
   Dio dio;
   String token;
   Map user;
+  BuildContext context;
+  var loading;
 
   static Global getInstance() {
     if (_instance == null) _instance = new Global();
@@ -18,26 +23,25 @@ class Global {
       connectTimeout: 5000,
       sendTimeout: 5000,
       receiveTimeout: 5000,
-      // headers: {
-      //   "token": "3213131",
-      // },
       contentType: Headers.formUrlEncodedContentType,
       responseType: ResponseType.json,
     );
     dio.interceptors.add(InterceptorsWrapper(
-      // onRequest: (options) {
-      //   print("请求" + options.headers.toString());
-      //   print("请求" + options.extra.toString());
-      // },
-      // onResponse: (e) {
-      //   print("返回" + e.toString());
-      // },
+      onRequest: (options) {
+        loading = WeToast.loading(context)(message: "Loading...");
+      },
+      onResponse: (e) {
+        loading();
+      },
       onError: (e) {
+        loading();
+        String msg = "";
         if (e.type == DioErrorType.CONNECT_TIMEOUT) {
-          print("连接超时错误");
+          msg = "连接超时错误";
         } else {
-          print("接口错误！");
+          msg = "接口错误！";
         }
+        WeToast.fail(context)(message: msg);
       },
     ));
   }

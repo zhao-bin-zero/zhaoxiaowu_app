@@ -2,24 +2,12 @@ import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:zhaoxiaowu_app/eventbus/event_bus.dart';
 import 'package:zhaoxiaowu_app/main.dart';
 import 'package:zhaoxiaowu_app/model/register_model.dart';
 import 'package:zhaoxiaowu_app/utils/event_utils.dart';
 import 'package:zhaoxiaowu_app/utils/rsa/rsa_utils.dart';
 
 class RegisterViewmodel extends ChangeNotifier {
-  bool _loading = false;
-
-  bool get getLoading {
-    return _loading;
-  }
-
-  void setLoading(bool value) {
-    _loading = value;
-    notifyListeners();
-  }
-
   void login(String user, String pass, String name, String phone, String code,
       int gender, String dateTime, int solar) async {
     String pwd = await encodeString(pass);
@@ -41,6 +29,5 @@ class RegisterViewmodel extends ChangeNotifier {
     } else {
       postMessage("fail", result.data["msg"]);
     }
-    setLoading(false);
   }
 }

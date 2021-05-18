@@ -8,6 +8,7 @@ import 'package:zhaoxiaowu_app/routes/routes.dart';
 import 'package:zhaoxiaowu_app/viewmodel/login_viewmodel.dart';
 import 'package:zhaoxiaowu_app/viewmodel/register_viewmodel.dart';
 import 'package:zhaoxiaowu_app/viewmodel/theme_viewmodel.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = new GlobalKey<NavigatorState>();
 void main() async {
@@ -77,18 +78,28 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      navigatorKey: navigatorKey,
-      debugShowCheckedModeBanner: false,
-      title: '赵小屋',
-      theme: ThemeData.light().copyWith(
-        primaryColor: themes[Provider.of<ThemeViewmodel>(context).getColor],
-        buttonTheme: ButtonThemeData(
-          buttonColor: themes[Provider.of<ThemeViewmodel>(context).getColor],
-          textTheme: ButtonTextTheme.normal,
+    return ScreenUtilInit(
+      designSize: Size(360, 690),
+      builder: () => MaterialApp(
+        navigatorKey: navigatorKey,
+        debugShowCheckedModeBanner: false,
+        title: '赵小屋',
+        theme: ThemeData.light().copyWith(
+          primaryColor: themes[Provider.of<ThemeViewmodel>(context).getColor],
+          buttonTheme: ButtonThemeData(
+            buttonColor: themes[Provider.of<ThemeViewmodel>(context).getColor],
+            textTheme: ButtonTextTheme.normal,
+          ),
         ),
+        builder: (context, widget) {
+          return MediaQuery(
+            //Setting font does not change with system font size
+            data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+            child: widget,
+          );
+        },
+        routes: routes,
       ),
-      routes: routes,
     );
   }
 }

@@ -6,6 +6,7 @@ import 'package:weui/input/index.dart';
 import 'package:weui/weui.dart';
 import 'package:zhaoxiaowu_app/base/view.dart';
 import 'package:zhaoxiaowu_app/eventbus/event_bus.dart';
+import 'package:zhaoxiaowu_app/global/global.dart';
 import 'package:zhaoxiaowu_app/utils/date_utils.dart';
 import 'package:zhaoxiaowu_app/viewmodel/register_viewmodel.dart';
 
@@ -166,7 +167,6 @@ class _RegisterViewState extends State<RegisterView> {
             margin: EdgeInsets.all(10),
             child: WeButton(
               "注册",
-              loading: Provider.of<RegisterViewmodel>(context).getLoading,
               theme: WeButtonType.warn,
               onClick: _register,
             ),
@@ -195,32 +195,26 @@ class _RegisterViewState extends State<RegisterView> {
   }
 
   void _register() {
-    context.read<RegisterViewmodel>().setLoading(true);
     if (_user.text == null || _user.text.isEmpty) {
       WeToast.fail(context)(message: "账号不能为空！");
-      context.read<RegisterViewmodel>().setLoading(false);
       return;
     } else if (_pass.text == null || _pass.text.isEmpty) {
       WeToast.fail(context)(message: "密码不能为空！");
-      context.read<RegisterViewmodel>().setLoading(false);
       return;
     } else if (_name.text == null || _name.text.isEmpty) {
       WeToast.fail(context)(message: "姓名不能为空！");
-      context.read<RegisterViewmodel>().setLoading(false);
       return;
     } else if (_phone.text == null || _phone.text.isEmpty) {
       WeToast.fail(context)(message: "手机号不能为空！");
-      context.read<RegisterViewmodel>().setLoading(false);
       return;
     } else if (_code.text == null || _code.text.isEmpty) {
       WeToast.fail(context)(message: "验证码不能为空！");
-      context.read<RegisterViewmodel>().setLoading(false);
       return;
     } else if (_dateTime == null) {
       WeToast.fail(context)(message: "生日不能为空！");
-      context.read<RegisterViewmodel>().setLoading(false);
       return;
     }
+    Global.getInstance().context = context;
     context.read<RegisterViewmodel>().login(
           _user.text,
           _pass.text,
