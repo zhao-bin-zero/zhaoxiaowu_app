@@ -6,6 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:weui/weui.dart';
 import 'package:zhaoxiaowu_app/base/view.dart';
 import 'package:zhaoxiaowu_app/global/global.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class MenuView extends StatefulWidget {
   @override
@@ -87,6 +88,15 @@ class _MenuViewState extends State<MenuView> {
               pagination: new SwiperPagination(),
               control: new SwiperControl(),
             ),
+          ),
+          SizedBox(
+            height: 16.0.h,
+          ),
+          RaisedButton(
+            onPressed: () {
+              Navigator.of(context).pushNamed("accouting");
+            },
+            child: Text("记账"),
           ),
         ],
       ),
