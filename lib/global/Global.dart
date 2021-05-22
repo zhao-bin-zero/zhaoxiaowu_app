@@ -33,6 +33,7 @@ class Global {
         return handler.next(response); // continue
       },
       onError: (DioError e, handler) {
+        print(e.toString());
         EasyLoading.dismiss();
         String msg = "";
         if (e.type == DioErrorType.connectTimeout) {
