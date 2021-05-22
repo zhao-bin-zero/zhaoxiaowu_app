@@ -91,7 +91,7 @@ class _MyAppState extends State<MyApp> {
           primaryColor: themes[Provider.of<ThemeViewmodel>(context).getColor],
           buttonTheme: ButtonThemeData(
             buttonColor: themes[Provider.of<ThemeViewmodel>(context).getColor],
-            textTheme: ButtonTextTheme.normal,
+            textTheme: ButtonTextTheme.primary,
           ),
         ),
         // builder: (context, widget) {

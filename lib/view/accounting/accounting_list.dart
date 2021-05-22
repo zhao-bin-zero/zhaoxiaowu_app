@@ -141,6 +141,11 @@ class _AccoutingViewState extends State<AccoutingView> {
               : Provider.of<AccoutingViewmodel>(context).getList.length,
         ),
       ),
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: Theme.of(context).primaryColor,
+        child: Icon(Icons.add),
+        onPressed: _add,
+      ),
     );
   }
 
@@ -230,5 +235,9 @@ class _AccoutingViewState extends State<AccoutingView> {
       context.read<AccoutingViewmodel>().setMonth(result);
       loadData();
     }
+  }
+
+  void _add() {
+    Navigator.of(context).pushNamed("accouting/add");
   }
 }
