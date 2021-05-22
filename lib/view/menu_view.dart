@@ -3,7 +3,6 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:weui/weui.dart';
 import 'package:zhaoxiaowu_app/base/view.dart';
 import 'package:zhaoxiaowu_app/global/global.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -44,27 +43,26 @@ class _MenuViewState extends State<MenuView> {
                 "81024198@qq.com",
               ),
             ),
-            WeCell(
-              label: "支出上限",
-              content: Global.getInstance().user["money"].toString(),
-              footer: Icon(Icons.navigate_next),
-              onClick: () {},
+            ListTile(
+              title: Text("支出上限"),
+              subtitle: Text(Global.getInstance().user["money"].toString()),
+              trailing: Icon(Icons.navigate_next),
+              onTap: () {},
             ),
             Divider(height: 1),
-            WeCell(
-              label: "注册日期",
-              content: Global.getInstance().user["date"],
-              footer: Icon(Icons.navigate_next),
-              onClick: () {
+            ListTile(
+              title: Text("注册日期"),
+              subtitle: Text(Global.getInstance().user["date"]),
+              trailing: Icon(Icons.navigate_next),
+              onTap: () {
                 Navigator.pop(context);
               },
             ),
             Divider(height: 1),
-            WeCell(
-              label: "退出登陆",
-              content: "",
-              footer: Icon(Icons.exit_to_app),
-              onClick: () async {
+            ListTile(
+              title: Text("退出登陆"),
+              trailing: Icon(Icons.exit_to_app),
+              onTap: () async {
                 SharedPreferences sp = await SharedPreferences.getInstance();
                 sp.remove("token");
                 Navigator.of(context).popAndPushNamed("/");

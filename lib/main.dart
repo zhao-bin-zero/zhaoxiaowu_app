@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:jpush_flutter/jpush_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -91,13 +92,15 @@ class _MyAppState extends State<MyApp> {
             textTheme: ButtonTextTheme.normal,
           ),
         ),
-        builder: (context, widget) {
-          return MediaQuery(
-            //Setting font does not change with system font size
-            data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
-            child: widget,
-          );
-        },
+        // builder: (context, widget) {
+        //   EasyLoading.init();
+        //   return MediaQuery(
+        //     //Setting font does not change with system font size
+        //     data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+        //     child: widget,
+        //   );
+        // },
+        builder: EasyLoading.init(),
         routes: routes,
       ),
     );

@@ -1,15 +1,12 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:weui/weui.dart';
-import 'package:zhaoxiaowu_app/main.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 class Global {
   static Global _instance;
   Dio dio;
   String token;
   Map user;
-  BuildContext context;
-  var loading;
 
   static Global getInstance() {
     if (_instance == null) _instance = new Global();
@@ -27,21 +24,23 @@ class Global {
       responseType: ResponseType.json,
     );
     dio.interceptors.add(InterceptorsWrapper(
-      onRequest: (options) {
-        loading = WeToast.loading(context)(message: "Loading...");
+      onRequest: (options, handler) {
+        EasyLoading.show(status: "Loading...");
+        return handler.next(options); //continue
       },
-      onResponse: (e) {
-        loading();
+      onResponse: (response, handler) {
+        EasyLoading.dismiss();
+        return handler.next(response); // continue
       },
-      onError: (e) {
-        loading();
+      onError: (DioError e, handler) {
+        EasyLoading.dismiss();
         String msg = "";
-        if (e.type == DioErrorType.CONNECT_TIMEOUT) {
+        if (e.type == DioErrorType.connectTimeout) {
           msg = "连接超时错误";
         } else {
           msg = "接口错误！";
         }
-        WeToast.fail(context)(message: msg);
+        EasyLoading.showError(msg);
       },
     ));
   }

@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:zhaoxiaowu_app/global/global.dart';
 import 'package:zhaoxiaowu_app/main.dart';
@@ -19,7 +20,7 @@ class LoginViewmodel extends ChangeNotifier {
           result.data["data"]["token"];
       Navigator.of(navigatorKey.currentContext).popAndPushNamed("menu");
     } else {
-      postMessage("fail", result.data["msg"]);
+      EasyLoading.showError(result.data["msg"]);
     }
   }
 

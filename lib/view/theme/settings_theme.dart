@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:weui/weui.dart';
 import 'package:zhaoxiaowu_app/base/view.dart';
 import 'package:zhaoxiaowu_app/global/global_theme.dart';
 import 'package:zhaoxiaowu_app/viewmodel/theme_viewmodel.dart';
@@ -40,7 +39,7 @@ class _SettingsThemeState extends State<SettingsTheme> {
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     Icon(
-                      WeIcons.hook,
+                      Icons.apps,
                       color: Colors.white,
                     ),
                     SizedBox(width: 16),

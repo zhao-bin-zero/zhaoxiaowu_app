@@ -1,9 +1,9 @@
 import 'dart:async';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:weui/weui.dart';
 import 'package:zhaoxiaowu_app/base/view.dart';
 import 'package:zhaoxiaowu_app/eventbus/event_bus.dart';
 import 'package:zhaoxiaowu_app/global/global.dart';
@@ -24,11 +24,6 @@ class _LoginViewState extends State<LoginView> {
     super.initState();
     _user = new TextEditingController();
     _pass = new TextEditingController();
-    bus.on("fail", (arg) {
-      if (arg["view"] == "login") {
-        WeToast.fail(context)(message: arg["message"]);
-      }
-    });
     loadData();
   }
 
@@ -38,7 +33,6 @@ class _LoginViewState extends State<LoginView> {
     super.dispose();
     _user.dispose();
     _pass.dispose();
-    bus.off("fail");
   }
 
   @override
@@ -95,16 +89,20 @@ class _LoginViewState extends State<LoginView> {
                 },
               ),
               SizedBox(height: 16.h),
-              WeButton(
-                "登陆",
-                theme: WeButtonType.primary,
-                onClick: _login,
+              Container(
+                width: double.infinity,
+                child: RaisedButton(
+                  child: Text("登陆"),
+                  onPressed: _login,
+                ),
               ),
               SizedBox(height: 8.h),
-              WeButton(
-                "注册",
-                theme: WeButtonType.primary,
-                onClick: _register,
+              Container(
+                width: double.infinity,
+                child: RaisedButton(
+                  child: Text("注册"),
+                  onPressed: _register,
+                ),
               ),
             ],
           ),
@@ -124,13 +122,12 @@ class _LoginViewState extends State<LoginView> {
 
   void _login() async {
     if (_user == null || _user.text.isEmpty) {
-      WeToast.fail(context)(message: "账号不能为空！");
+      EasyLoading.showError('账号不能为空！');
       return;
     } else if (_pass == null || _pass.text.isEmpty) {
-      WeToast.fail(context)(message: "密码不能为空！");
+      EasyLoading.showError('密码不能为空！');
       return;
     }
-    Global.getInstance().context = context;
     context.read<LoginViewmodel>().login(_user.text, _pass.text);
   }
 

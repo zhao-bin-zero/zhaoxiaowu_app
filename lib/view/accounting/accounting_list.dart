@@ -23,10 +23,32 @@ class _AccoutingViewState extends State<AccoutingView> {
       appBar: getAppbar("记账"),
       body: Padding(
         padding: EdgeInsets.all(10),
-        child: ListView.builder(
-          shrinkWrap: true,
-          itemBuilder: _itemBuilder,
-          itemCount: _data == null ? 0 : _data.length,
+        child: Column(
+          children: [
+            Row(
+              children: [
+                Expanded(child: Text("2021年")),
+                Expanded(child: Text("本月预算")),
+                Expanded(child: Text("收入")),
+                Expanded(child: Text("支出")),
+              ],
+            ),
+            SizedBox(height: 8),
+            Row(
+              children: [
+                Expanded(child: Text("5月")),
+                Expanded(child: Text("2500.0")),
+                Expanded(child: Text("200")),
+                Expanded(child: Text("500")),
+              ],
+            ),
+            SizedBox(height: 8),
+            ListView.builder(
+              shrinkWrap: true,
+              itemBuilder: _itemBuilder,
+              itemCount: _data == null ? 0 : _data.length,
+            ),
+          ],
         ),
       ),
     );
@@ -90,7 +112,6 @@ class _AccoutingViewState extends State<AccoutingView> {
   }
 
   void loadData() async {
-    Global.getInstance().context = context;
     var result = await Global.getInstance().dio.get(
       "/zxw/AccountingHistory",
       queryParameters: {

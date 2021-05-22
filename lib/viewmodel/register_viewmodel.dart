@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:zhaoxiaowu_app/main.dart';
 import 'package:zhaoxiaowu_app/model/register_model.dart';
 import 'package:zhaoxiaowu_app/utils/event_utils.dart';
@@ -27,7 +28,7 @@ class RegisterViewmodel extends ChangeNotifier {
         "pass": pass,
       });
     } else {
-      postMessage("fail", result.data["msg"]);
+      EasyLoading.showError(result.data["msg"]);
     }
   }
 }
