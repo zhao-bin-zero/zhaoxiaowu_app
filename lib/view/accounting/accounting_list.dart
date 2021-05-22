@@ -10,6 +10,9 @@ class AccoutingView extends StatefulWidget {
 
 class _AccoutingViewState extends State<AccoutingView> {
   List _data;
+  double _expenditure = 0; //支出
+  double _income = 0; //收入
+  int _month;
   @override
   void initState() {
     // TODO: implement initState
@@ -20,35 +23,115 @@ class _AccoutingViewState extends State<AccoutingView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: getAppbar("记账"),
+      appBar: AppBar(
+        title: Text("记账"),
+        centerTitle: true,
+        elevation: 10,
+        bottom: PreferredSize(
+          preferredSize: Size.fromHeight(80),
+          child: Container(
+            padding: EdgeInsets.all(10),
+            child: Column(
+              children: [
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        DateTime.now().year.toString() + "年",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      child: Text(
+                        "本月预算",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      child: Text(
+                        "收入",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      child: Text(
+                        "支出",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 8),
+                Row(
+                  children: [
+                    Expanded(
+                      child: GestureDetector(
+                        child: Text(
+                          _month.toString() + "月",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                          ),
+                        ),
+                        onTap: _getMonth,
+                      ),
+                    ),
+                    Expanded(
+                      child: Text(
+                        Global.getInstance().user["money"].toString(),
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      child: Text(
+                        _income.toString(),
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      child: Text(
+                        _expenditure.toString(),
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
       body: Padding(
         padding: EdgeInsets.all(10),
-        child: Column(
-          children: [
-            Row(
-              children: [
-                Expanded(child: Text("2021年")),
-                Expanded(child: Text("本月预算")),
-                Expanded(child: Text("收入")),
-                Expanded(child: Text("支出")),
-              ],
-            ),
-            SizedBox(height: 8),
-            Row(
-              children: [
-                Expanded(child: Text("5月")),
-                Expanded(child: Text("2500.0")),
-                Expanded(child: Text("200")),
-                Expanded(child: Text("500")),
-              ],
-            ),
-            SizedBox(height: 8),
-            ListView.builder(
-              shrinkWrap: true,
-              itemBuilder: _itemBuilder,
-              itemCount: _data == null ? 0 : _data.length,
-            ),
-          ],
+        child: ListView.builder(
+          shrinkWrap: true,
+          itemBuilder: _itemBuilder,
+          itemCount: _data == null ? 0 : _data.length,
         ),
       ),
     );
@@ -90,6 +173,7 @@ class _AccoutingViewState extends State<AccoutingView> {
   List<Widget> _childrens(var datas) {
     List<Widget> widgets = [];
     for (var i = 0; i < datas.length; i++) {
+      widgets.add(Container(height: 8));
       widgets.add(Row(
         children: [
           Icon(Icons.add),
@@ -99,7 +183,12 @@ class _AccoutingViewState extends State<AccoutingView> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(datas[i]["type"]["action"] == 0 ? "收入" : "支出"),
-                Text("描述：" + datas[i]["desc"]),
+                Text(
+                  "描述：" + datas[i]["desc"],
+                  style: TextStyle(
+                    color: Colors.grey,
+                  ),
+                ),
               ],
             ),
           ),
@@ -112,18 +201,54 @@ class _AccoutingViewState extends State<AccoutingView> {
   }
 
   void loadData() async {
+    if (_month == null) {
+      _month = DateTime.now().month;
+    }
+    setState(() {
+      _data = [];
+    });
     var result = await Global.getInstance().dio.get(
       "/zxw/AccountingHistory",
       queryParameters: {
-        "date": "202104",
+        "date": DateTime.now().year.toString() +
+            (_month < 10 ? "0" + _month.toString() : _month.toString()),
       },
     );
     setState(() {
       if (result.data["success"]) {
         _data = result.data["data"]["data"];
+        _expenditure = result.data["data"]["expenditure"];
+        _income = result.data["data"]["income"];
       } else {
         postMessage("fail", result.data["msg"]);
       }
     });
+  }
+
+  void _getMonth() {
+    List list = [];
+    for (var i = 1; i <= 12; i++) {
+      if (i <= DateTime.now().month) list.add(i);
+    }
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return SimpleDialog(
+          children: list.map((e) {
+            return SimpleDialogOption(
+              child: Text(e.toString() + "月"),
+              onPressed: () {
+                setState(() {
+                  _month = e;
+                  Navigator.pop(context);
+                  loadData();
+                });
+              },
+            );
+          }).toList(),
+        );
+      },
+      barrierDismissible: false,
+    );
   }
 }
