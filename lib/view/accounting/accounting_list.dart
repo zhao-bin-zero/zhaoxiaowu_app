@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:zhaoxiaowu_app/base/view.dart';
+import 'package:provider/provider.dart';
 import 'package:zhaoxiaowu_app/global/global.dart';
+import 'package:zhaoxiaowu_app/utils/alert_utils.dart';
 import 'package:zhaoxiaowu_app/utils/event_utils.dart';
+import 'package:zhaoxiaowu_app/viewmodel/accouting_viewmodel.dart';
 
 class AccoutingView extends StatefulWidget {
   @override
@@ -9,15 +11,11 @@ class AccoutingView extends StatefulWidget {
 }
 
 class _AccoutingViewState extends State<AccoutingView> {
-  List _data;
-  double _expenditure = 0; //支出
-  double _income = 0; //收入
-  int _month;
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    loadData();
+    if (context.read<AccoutingViewmodel>().getList.length == 0) loadData();
   }
 
   @override
@@ -83,7 +81,10 @@ class _AccoutingViewState extends State<AccoutingView> {
                     Expanded(
                       child: GestureDetector(
                         child: Text(
-                          _month.toString() + "月",
+                          Provider.of<AccoutingViewmodel>(context)
+                                  .getMonth
+                                  .toString() +
+                              "月",
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 16,
@@ -103,7 +104,9 @@ class _AccoutingViewState extends State<AccoutingView> {
                     ),
                     Expanded(
                       child: Text(
-                        _income.toString(),
+                        Provider.of<AccoutingViewmodel>(context)
+                            .getIncome
+                            .toString(),
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 16,
@@ -112,7 +115,9 @@ class _AccoutingViewState extends State<AccoutingView> {
                     ),
                     Expanded(
                       child: Text(
-                        _expenditure.toString(),
+                        Provider.of<AccoutingViewmodel>(context)
+                            .getExpenditure
+                            .toString(),
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 16,
@@ -131,7 +136,9 @@ class _AccoutingViewState extends State<AccoutingView> {
         child: ListView.builder(
           shrinkWrap: true,
           itemBuilder: _itemBuilder,
-          itemCount: _data == null ? 0 : _data.length,
+          itemCount: Provider.of<AccoutingViewmodel>(context).getList == null
+              ? 0
+              : Provider.of<AccoutingViewmodel>(context).getList.length,
         ),
       ),
     );
@@ -146,17 +153,24 @@ class _AccoutingViewState extends State<AccoutingView> {
             children: [
               Expanded(
                 child: Text(
-                  _data[index]["date"],
+                  Provider.of<AccoutingViewmodel>(context).getList[index]
+                      ["date"],
                   style: Theme.of(context).textTheme.title,
                 ),
               ),
               Text(
-                "收入:" + _data[index]["income"].toString(),
+                "收入:" +
+                    Provider.of<AccoutingViewmodel>(context)
+                        .getList[index]["income"]
+                        .toString(),
                 style: Theme.of(context).textTheme.bodyText1,
               ),
               SizedBox(width: 8),
               Text(
-                "支出:" + _data[index]["expenditure"].toString(),
+                "支出:" +
+                    Provider.of<AccoutingViewmodel>(context)
+                        .getList[index]["expenditure"]
+                        .toString(),
                 style: Theme.of(context).textTheme.bodyText1,
               ),
             ],
@@ -164,7 +178,8 @@ class _AccoutingViewState extends State<AccoutingView> {
         ),
         Divider(height: 1),
         Column(
-          children: _childrens(_data[index]["data"]),
+          children: _childrens(
+              Provider.of<AccoutingViewmodel>(context).getList[index]["data"]),
         ),
       ],
     );
@@ -201,54 +216,19 @@ class _AccoutingViewState extends State<AccoutingView> {
   }
 
   void loadData() async {
-    if (_month == null) {
-      _month = DateTime.now().month;
-    }
-    setState(() {
-      _data = [];
-    });
-    var result = await Global.getInstance().dio.get(
-      "/zxw/AccountingHistory",
-      queryParameters: {
-        "date": DateTime.now().year.toString() +
-            (_month < 10 ? "0" + _month.toString() : _month.toString()),
-      },
-    );
-    setState(() {
-      if (result.data["success"]) {
-        _data = result.data["data"]["data"];
-        _expenditure = result.data["data"]["expenditure"];
-        _income = result.data["data"]["income"];
-      } else {
-        postMessage("fail", result.data["msg"]);
-      }
-    });
+    context.read<AccoutingViewmodel>().setList([]);
+    context.read<AccoutingViewmodel>().accountingHistory();
   }
 
-  void _getMonth() {
+  void _getMonth() async {
     List list = [];
     for (var i = 1; i <= 12; i++) {
       if (i <= DateTime.now().month) list.add(i);
     }
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return SimpleDialog(
-          children: list.map((e) {
-            return SimpleDialogOption(
-              child: Text(e.toString() + "月"),
-              onPressed: () {
-                setState(() {
-                  _month = e;
-                  Navigator.pop(context);
-                  loadData();
-                });
-              },
-            );
-          }).toList(),
-        );
-      },
-      barrierDismissible: false,
-    );
+    var result = await showMonthList(list);
+    if (result != null) {
+      context.read<AccoutingViewmodel>().setMonth(result);
+      loadData();
+    }
   }
 }

@@ -90,11 +90,15 @@ class _MenuViewState extends State<MenuView> {
           SizedBox(
             height: 16.0.h,
           ),
-          RaisedButton(
-            onPressed: () {
-              Navigator.of(context).pushNamed("accouting");
-            },
-            child: Text("记账"),
+          Container(
+            margin: EdgeInsets.all(8),
+            width: double.infinity,
+            child: RaisedButton(
+              onPressed: () {
+                Navigator.of(context).pushNamed("accouting");
+              },
+              child: Text("记账"),
+            ),
           ),
         ],
       ),
