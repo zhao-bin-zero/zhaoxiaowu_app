@@ -8,3 +8,12 @@ Future getAccountingHistory(String date) async {
     },
   );
 }
+
+Future deleteAccoutingList(String id) async {
+  return await Global.getInstance().dio.delete(
+    "/zxw/AccountingHistory",
+    queryParameters: {
+      "id": id,
+    },
+  );
+}

@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:left_scroll_actions/cupertinoLeftScroll.dart';
+import 'package:left_scroll_actions/global/actionListener.dart';
+import 'package:left_scroll_actions/leftScroll.dart';
 import 'package:provider/provider.dart';
 import 'package:zhaoxiaowu_app/global/global.dart';
 import 'package:zhaoxiaowu_app/utils/alert_utils.dart';
@@ -131,15 +134,12 @@ class _AccoutingViewState extends State<AccoutingView> {
           ),
         ),
       ),
-      body: Padding(
-        padding: EdgeInsets.all(10),
-        child: ListView.builder(
-          shrinkWrap: true,
-          itemBuilder: _itemBuilder,
-          itemCount: Provider.of<AccoutingViewmodel>(context).getList == null
-              ? 0
-              : Provider.of<AccoutingViewmodel>(context).getList.length,
-        ),
+      body: ListView.builder(
+        shrinkWrap: true,
+        itemBuilder: _itemBuilder,
+        itemCount: Provider.of<AccoutingViewmodel>(context).getList == null
+            ? 0
+            : Provider.of<AccoutingViewmodel>(context).getList.length,
       ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: Theme.of(context).primaryColor,
@@ -194,27 +194,44 @@ class _AccoutingViewState extends State<AccoutingView> {
     List<Widget> widgets = [];
     for (var i = 0; i < datas.length; i++) {
       widgets.add(Container(height: 8));
-      widgets.add(Row(
-        children: [
-          Icon(Icons.add),
-          SizedBox(width: 16),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(datas[i]["type"]["action"] == 0 ? "收入" : "支出"),
-                Text(
-                  "描述：" + datas[i]["desc"],
-                  style: TextStyle(
-                    color: Colors.grey,
-                  ),
+      widgets.add(
+        CupertinoLeftScroll(
+          key: Key(i.toString()),
+          closeTag: LeftScrollCloseTag('TODO: your tag'),
+          child: Row(
+            children: [
+              Icon(Icons.add),
+              SizedBox(width: 16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(datas[i]["type"]["action"] == 0 ? "收入" : "支出"),
+                    Text(
+                      "描述：" + datas[i]["desc"],
+                      style: TextStyle(
+                        color: Colors.grey,
+                      ),
+                    ),
+                  ],
                 ),
-              ],
-            ),
+              ),
+              Text(datas[i]["money"].toString()),
+            ],
           ),
-          Text(datas[i]["money"].toString()),
-        ],
-      ));
+          buttons: [
+            LeftScrollItem(
+              text: '删除',
+              color: Colors.red,
+              onTap: () {
+                context
+                    .read<AccoutingViewmodel>()
+                    .delete(datas[i]["id"].toString());
+              },
+            ),
+          ],
+        ),
+      );
       widgets.add(Container(height: 8));
     }
     return widgets;

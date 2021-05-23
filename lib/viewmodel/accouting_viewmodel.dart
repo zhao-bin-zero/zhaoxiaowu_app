@@ -56,12 +56,22 @@ class AccoutingViewmodel extends ChangeNotifier {
   void accountingHistory() async {
     Response result = await getAccountingHistory(
         DateTime.now().year.toString() +
-            (_month < 10 ? "0" + _month.toString() : _month.toString()));
+            (getMonth < 10 ? "0" + getMonth.toString() : getMonth.toString()));
     print(result);
     if (result.data["success"]) {
       setList(result.data["data"]["data"]);
       setExpenditure(result.data["data"]["expenditure"]);
       setExpenditure(result.data["data"]["income"]);
+    } else {
+      postMessage("fail", result.data["msg"]);
+    }
+  }
+
+  void delete(String id) async {
+    Response result = await deleteAccoutingList(id);
+    print(result);
+    if (result.data["success"]) {
+      accountingHistory();
     } else {
       postMessage("fail", result.data["msg"]);
     }
