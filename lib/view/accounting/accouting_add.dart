@@ -1,5 +1,13 @@
+import 'dart:convert';
+import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:zhaoxiaowu_app/base/view.dart';
+import 'package:zhaoxiaowu_app/eventbus/event_bus.dart';
+import 'package:zhaoxiaowu_app/global/global.dart';
+import 'package:zhaoxiaowu_app/utils/alert_utils.dart';
+import 'package:zhaoxiaowu_app/utils/date_utils.dart';
+import 'package:zhaoxiaowu_app/viewmodel/accouting_add_viewmodel.dart';
+import 'package:zhaoxiaowu_app/viewmodel/accouting_viewmodel.dart';
 
 class AccoutingAddView extends StatefulWidget {
   @override
@@ -14,6 +22,13 @@ class _AccoutingAddViewState extends State<AccoutingAddView> {
   void initState() {
     _money = TextEditingController();
     _desc = TextEditingController();
+    bus.on("accouting_add_result", (arg) {
+      context.read<AccoutingViewmodel>().accountingHistory();
+      setState(() {
+        _money.text = "";
+        _desc.text = "";
+      });
+    });
     super.initState();
   }
 
@@ -21,6 +36,7 @@ class _AccoutingAddViewState extends State<AccoutingAddView> {
   void dispose() {
     _money.dispose();
     _desc.dispose();
+    bus.off("accouting_add_result");
     super.dispose();
   }
 
@@ -34,12 +50,20 @@ class _AccoutingAddViewState extends State<AccoutingAddView> {
           children: [
             ListTile(
               title: Text("类型"),
-              trailing: Text("data"),
+              trailing: Text(Provider.of<AccoutingAddViewmodel>(context)
+                      .getTypes[
+                  Provider.of<AccoutingAddViewmodel>(context).getType]["name"]),
+              onTap: _showTypesAlert,
             ),
             Divider(height: 1),
             ListTile(
               title: Text("方式"),
-              trailing: Text("data"),
+              trailing: Text(
+                  Provider.of<AccoutingAddViewmodel>(context).getMode == null
+                      ? ""
+                      : Provider.of<AccoutingAddViewmodel>(context)
+                          .getMode["name"]),
+              onTap: _accountingType,
             ),
             Divider(height: 1),
             Container(
@@ -83,5 +107,22 @@ class _AccoutingAddViewState extends State<AccoutingAddView> {
     );
   }
 
-  void _submit() {}
+  void _showTypesAlert() async {
+    var result = await showObjectAlertDialog(
+        context.read<AccoutingAddViewmodel>().getTypes, "选择类型", "name");
+    print(result);
+    if (result != null &&
+        result != context.read<AccoutingAddViewmodel>().getType) {
+      context.read<AccoutingAddViewmodel>().setMode(null);
+      context.read<AccoutingAddViewmodel>().setType(result);
+    }
+  }
+
+  void _accountingType() async {
+    context.read<AccoutingAddViewmodel>().getModeAndAlert();
+  }
+
+  void _submit() async {
+    context.read<AccoutingAddViewmodel>().insert(_money.text, _desc.text);
+  }
 }

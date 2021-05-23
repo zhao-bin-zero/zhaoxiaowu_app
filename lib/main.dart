@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:zhaoxiaowu_app/global/global_theme.dart';
 import 'package:zhaoxiaowu_app/routes/routes.dart';
+import 'package:zhaoxiaowu_app/viewmodel/accouting_add_viewmodel.dart';
 import 'package:zhaoxiaowu_app/viewmodel/accouting_viewmodel.dart';
 import 'package:zhaoxiaowu_app/viewmodel/login_viewmodel.dart';
 import 'package:zhaoxiaowu_app/viewmodel/register_viewmodel.dart';
@@ -25,6 +26,7 @@ void main() async {
       ChangeNotifierProvider(create: (context) => RegisterViewmodel()),
       ChangeNotifierProvider(create: (context) => themeViewmodel),
       ChangeNotifierProvider(create: (context) => AccoutingViewmodel()),
+      ChangeNotifierProvider(create: (context) => AccoutingAddViewmodel()),
     ],
     child: MyApp(),
   ));

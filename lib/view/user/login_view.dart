@@ -114,6 +114,7 @@ class _LoginViewState extends State<LoginView> {
   void loadData() async {
     SharedPreferences sp = await SharedPreferences.getInstance();
     String token = await sp.getString("token");
+    print(token);
     if (token != null) {
       Global.getInstance().dio.options.headers["token"] = token;
       context.read<LoginViewmodel>().tokenLogin(token);
