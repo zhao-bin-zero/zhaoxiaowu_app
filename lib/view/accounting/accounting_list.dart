@@ -133,6 +133,14 @@ class _AccoutingViewState extends State<AccoutingView> {
             ),
           ),
         ),
+        actions: [
+          IconButton(
+            onPressed: () {
+              Navigator.pushNamed(context, "accouting/chart");
+            },
+            icon: Icon(Icons.chat_rounded),
+          ),
+        ],
       ),
       body: ListView.builder(
         shrinkWrap: true,

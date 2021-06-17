@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:zhaoxiaowu_app/view/accounting/accounting_chart.dart';
 import 'package:zhaoxiaowu_app/view/accounting/accounting_list.dart';
 import 'package:zhaoxiaowu_app/view/accounting/accouting_add.dart';
 import 'package:zhaoxiaowu_app/view/user/login_view.dart';
@@ -13,4 +14,5 @@ Map<String, WidgetBuilder> routes = {
   "theme": (BuildContext context) => SettingsTheme(),
   "accouting": (BuildContext context) => AccoutingView(),
   "accouting/add": (BuildContext context) => AccoutingAddView(),
+  "accouting/chart": (BuildContext context) => AccountingChartView(),
 };
