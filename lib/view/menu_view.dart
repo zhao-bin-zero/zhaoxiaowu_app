@@ -100,6 +100,19 @@ class _MenuViewState extends State<MenuView> {
               child: Text("记账"),
             ),
           ),
+          SizedBox(
+            height: 16.0.h,
+          ),
+          Container(
+            margin: EdgeInsets.all(8),
+            width: double.infinity,
+            child: RaisedButton(
+              onPressed: () {
+                Navigator.of(context).pushNamed("loveImage");
+              },
+              child: Text("恋爱记录"),
+            ),
+          ),
         ],
       ),
     );
