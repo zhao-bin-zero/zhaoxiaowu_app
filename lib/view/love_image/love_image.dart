@@ -17,13 +17,51 @@ class LoveImageView extends StatefulWidget {
 }
 
 class _LoveImageViewState extends State<LoveImageView> {
-  File _image;
   final picker = ImagePicker();
   List _imgs;
 
   Future getImage() async {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              title: Text("拍照"),
+              trailing: Icon(Icons.camera_alt),
+              onTap: _camera,
+            ),
+            ListTile(
+              title: Text("图片选择"),
+              trailing: Icon(Icons.gavel_outlined),
+              onTap: _gallery,
+            ),
+            ListTile(
+              title: Text("取消"),
+              trailing: Icon(Icons.cancel),
+              onTap: () {
+                Navigator.pop(context);
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _gallery() async {
     final pickedFile = await picker.getImage(source: ImageSource.gallery);
-    File file = File(pickedFile.path);
+    uploadFile(pickedFile.path);
+  }
+
+  void _camera() async {
+    final pickedFile = await picker.getImage(source: ImageSource.camera);
+    uploadFile(pickedFile.path);
+  }
+
+  void uploadFile(String path) async {
+    File file = File(path);
     CompressObject compressObject = CompressObject(
       imageFile: file, //image
       path: file.path.substring(
@@ -72,6 +110,22 @@ class _LoveImageViewState extends State<LoveImageView> {
     }
   }
 
+  void _delete(int id) async {
+    print(id.toString());
+    var result = await Global.getInstance().dio.delete(
+      "/zxw/Imgs",
+      data: {
+        "id": id.toString(),
+      },
+    );
+    if (result.data["success"]) {
+      EasyLoading.showSuccess(result.data["msg"]);
+      loadData();
+    } else {
+      EasyLoading.showError(result.data["msg"]);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -96,10 +150,24 @@ class _LoveImageViewState extends State<LoveImageView> {
     if (_imgs != null) {
       for (var e in _imgs) {
         widgets.add(
-          Image.network(
-            e["url"],
-            width: 200,
-            height: 200,
+          Stack(
+            children: [
+              Image.network(
+                e["url"],
+                fit: BoxFit.fill,
+                width: 200,
+                height: 200,
+              ),
+              GestureDetector(
+                onTap: () {
+                  _delete(e["id"]);
+                },
+                child: Align(
+                  alignment: Alignment.topRight,
+                  child: Icon(Icons.delete),
+                ),
+              ),
+            ],
           ),
         );
       }
