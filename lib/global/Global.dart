@@ -17,6 +17,7 @@ class Global {
     dio = new Dio();
     dio.options = BaseOptions(
       baseUrl: "https://zxw.td0f7.cn/",
+      // baseUrl: "http://localhost:8080/",
       connectTimeout: 5000,
       sendTimeout: 5000,
       receiveTimeout: 5000,
